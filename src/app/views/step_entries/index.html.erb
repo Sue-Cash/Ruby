@@ -1,0 +1,45 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">Suivi de Pas de Marche</h1>
+
+  <div class="flex justify-end mb-4">
+    <%= link_to "Ajouter une nouvelle entrée", new_step_entry_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+
+  <!-- Graphique avec Chartkick : on affiche l'évolution du nombre de pas -->
+  <div class="mb-4">
+    <%= line_chart @step_entries.map { |entry| [entry.date, entry.steps] },
+          height: "300px",
+          library: {
+            title: { text: "Évolution des Pas", x: -20 },
+            xAxis: { title: { text: "Date" } },
+            yAxis: { title: { text: "Nombre de Pas" } }
+          } %>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white shadow-md rounded-lg">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+          <th class="py-3 px-6 text-left">Date</th>
+          <th class="py-3 px-6 text-left">Nombre de Pas</th>
+          <th class="py-3 px-6 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 text-sm font-light">
+        <% @step_entries.each do |entry| %>
+          <tr class="border-b border-gray-200 hover:bg-gray-100">
+            <td class="py-3 px-6 text-left"><%= entry.date %></td>
+            <td class="py-3 px-6 text-left"><%= entry.steps %></td>
+            <td class="py-3 px-6 text-center flex justify-center">
+              <%= link_to "Voir", step_entry_path(entry), class: "text-blue-500 hover:underline" %> |
+              <%= link_to "Modifier", edit_step_entry_path(entry), class: "text-green-500 hover:underline" %> |
+              <%= button_to step_entry_path(entry), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cet enregistrement ?" }, class: "text-red-500 hover:underline", title: "Supprimer" do %>
+                Supprimer
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
